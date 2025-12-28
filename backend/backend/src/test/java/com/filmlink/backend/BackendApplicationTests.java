@@ -1,11 +1,11 @@
 package com.filmlink.backend;
 
-import com.filmapp.FilmAppApplication;
+import com.filmlink.FilmlinkApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(classes = FilmAppApplication.class)
+@SpringBootTest(classes = FilmlinkApplication.class)
 @ActiveProfiles("test")
 class BackendApplicationTests {
 
