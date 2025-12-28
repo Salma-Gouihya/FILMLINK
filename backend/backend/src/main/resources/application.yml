@@ -1,0 +1,17 @@
+spring:
+  neo4j:
+    uri: neo4j://127.0.0.1:7687
+    authentication:
+      username: neo4j
+      password: gouihya@2025
+
+  application:
+    name: movie-recommendation-api
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.filmlink: DEBUG
+    org.springframework.data.neo4j: INFO
