@@ -12,10 +12,10 @@ import java.util.Optional;
 public interface UserRepository extends Neo4jRepository<User, Long> {
     Optional<User> findByUsername(String username);
     
-    @Query("MATCH (u:User) WHERE u.username = $usernameOrEmail OR u.email = $usernameOrEmail RETURN u")
+    @Query("MATCH (u:Utilisateur) WHERE u.username = $usernameOrEmail OR u.email = $usernameOrEmail RETURN u LIMIT 1")
     Optional<User> findByUsernameOrEmail(@Param("usernameOrEmail") String usernameOrEmail);
     
-    @Query("MATCH (u:User {email: $email}) RETURN u")
+    @Query("MATCH (u:Utilisateur {email: $email}) RETURN u")
     Optional<User> findByEmail(@Param("email") String email);
     
     Boolean existsByUsername(String username);

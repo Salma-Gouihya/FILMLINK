@@ -1,5 +1,6 @@
 package com.filmlink.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.data.neo4j.core.schema.*;
 import java.util.HashSet;
@@ -11,19 +12,35 @@ public class Film {
     @Id @GeneratedValue
     private Long id;
     
+    @Property("titre")
     private String title;
+    
+    @Property("annee")
     private Integer releaseYear;
+    
     private String description;
     
-    @Relationship(type = "HAS_GENRE", direction = Relationship.Direction.OUTGOING)
+    @Property("poster_url")
+    private String posterUrl;
+    
+    private String tagline;
+
+    public String getReleased() {
+        return releaseYear != null ? releaseYear.toString() : "";
+    }
+    
+    @Relationship(type = "APPARTIENT_A", direction = Relationship.Direction.OUTGOING)
     private Set<Genre> genres = new HashSet<>();
     
-    @Relationship(type = "STARRED_IN", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = "A_JOUE", direction = Relationship.Direction.INCOMING)
     private Set<Actor> actors = new HashSet<>();
     
-    @Relationship(type = "WATCHED", direction = Relationship.Direction.INCOMING)
-    private Set<User> watchedBy = new HashSet<>();
+    // Updated to match User's "AIME" relationship
+    @JsonIgnore
+    @Relationship(type = "AIME", direction = Relationship.Direction.INCOMING)
+    private Set<User> likedBy = new HashSet<>();
     
+    // Keeping RATED as is or removing if not in new spec, keeping for now
     @Relationship(type = "RATED", direction = Relationship.Direction.INCOMING)
     private Set<Rating> ratings = new HashSet<>();
     

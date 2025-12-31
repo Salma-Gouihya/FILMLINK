@@ -13,7 +13,8 @@ public class FilmService {
     private FilmRepository filmRepository;
 
     public List<Film> getAllFilms() {
-        return filmRepository.findAll();
+        // Utilisation de la méthode personnalisée pour éviter les problèmes de sérialisation
+        return filmRepository.findAllWithRelationships();
     }
 
     public Film getFilmById(Long id) {
@@ -38,5 +39,9 @@ public class FilmService {
 
     public void deleteFilm(Long id) {
         filmRepository.deleteById(id);
+    }
+
+    public List<Film> getRecommendations(Long userId) {
+        return filmRepository.findRecommendationsByUserId(userId);
     }
 }

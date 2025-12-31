@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/films")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class FilmController {
 
     @Autowired
@@ -48,5 +49,10 @@ public class FilmController {
     @DeleteMapping("/{id}")
     public void deleteFilm(@PathVariable Long id) {
         filmService.deleteFilm(id);
+    }
+
+    @GetMapping("/recommendations/{userId}")
+    public List<Film> getRecommendations(@PathVariable Long userId) {
+        return filmService.getRecommendations(userId);
     }
 }

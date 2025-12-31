@@ -17,16 +17,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        // D'abord essayer de trouver par nom d'utilisateur
-        User user = userRepository.findByUsername(usernameOrEmail)
-                .or(() -> userRepository.findByEmail(usernameOrEmail))
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with username or email : " + usernameOrEmail)
-                );
-
-        return UserPrincipal.create(user);
+        // Utilisation de la méthode qui gère à la fois username et email
+        return userRepository.findByUsernameOrEmail(usernameOrEmail)
+                .map(UserPrincipal::create)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
     }
 
     @Transactional

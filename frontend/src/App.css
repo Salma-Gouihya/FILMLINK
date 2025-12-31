@@ -1,0 +1,94 @@
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  /* Override vite default */
+}
+
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://assets.nflxext.com/ffe/siteui/vlv3/ab180a27-b661-44cd-9579-9dcaf57ea4cc/381a3a30-22c6-4395-88dd-7321fa61587d/FR-fr-20231009-popsignuptwoweeks-perspective_alpha_website_large.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.auth-box {
+  background-color: rgba(0, 0, 0, 0.75);
+  padding: 60px 68px 40px;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 450px;
+  color: white;
+}
+
+.logo-large {
+  font-family: var(--font-title);
+  font-size: 3rem;
+  color: var(--primary);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Override inputs for auth page */
+.auth-box input {
+  padding: 16px 20px;
+  border-radius: 4px;
+  background: #333;
+  border: none;
+  color: white;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.btn-primary-auth {
+  background-color: var(--primary);
+  color: white;
+  padding: 16px;
+  border-radius: 4px;
+  font-weight: 700;
+  margin-top: 24px;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary-auth:hover {
+  background-color: var(--primary-hover);
+}
+
+.toggle-auth {
+  margin-top: 16px;
+  color: #737373;
+}
+
+.toggle-auth span {
+  color: white;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.toggle-auth span:hover {
+  text-decoration: underline;
+}
+
+.error-msg {
+  background: #e87c03;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.input-group label {
+  display: none;
+}

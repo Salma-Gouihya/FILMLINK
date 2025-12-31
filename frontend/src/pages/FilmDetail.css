@@ -1,0 +1,140 @@
+.film-detail-page {
+    min-height: 100vh;
+    background-color: var(--bg-main);
+}
+
+.detail-hero {
+    position: relative;
+    height: 70vh;
+    background-size: cover;
+    background-position: center;
+}
+
+.detail-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
+    display: flex;
+    align-items: center;
+    padding-left: 4%;
+}
+
+.detail-content {
+    max-width: 700px;
+    margin-top: 60px;
+}
+
+.detail-title {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.detail-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+
+.detail-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.detail-synopsis {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #fff;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.detail-tags {
+    font-size: 1rem;
+}
+
+.tag-label {
+    color: #777;
+    margin-right: 0.5rem;
+}
+
+.detail-fade-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(180deg, transparent, var(--bg-main));
+}
+
+.detail-body {
+    padding: 0 4%;
+    position: relative;
+    z-index: 10;
+    margin-top: -50px;
+}
+
+.detail-columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+}
+
+.cast-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.cast-item {
+    background: #333;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.meta-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #333;
+}
+
+.meta-row .label {
+    color: #777;
+}
+
+.meta-row .value {
+    color: #fff;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--primary);
+    padding-left: 1rem;
+}
+
+@media (max-width: 768px) {
+    .detail-title {
+        font-size: 2.5rem;
+    }
+
+    .detail-columns {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .detail-hero {
+        height: 50vh;
+    }
+}

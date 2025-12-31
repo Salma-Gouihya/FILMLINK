@@ -1,0 +1,61 @@
+.section-row {
+    margin: 3vw 0;
+    padding-left: 4%;
+}
+
+.section-title {
+    font-size: 1.4vw;
+    color: #e5e5e5;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    transition: color 0.2s;
+    font-family: var(--font-body);
+}
+
+.section-title:hover {
+    color: #fff;
+}
+
+.row-scroller {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 20px 0;
+    /* Space for hover expansion */
+    margin-top: -20px;
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.row-scroller::-webkit-scrollbar {
+    display: none;
+}
+
+.row-content {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.row-item {
+    flex: 0 0 calc(100% / 6 - 0.5rem);
+    /* 6 items per row */
+    min-width: 200px;
+}
+
+@media (max-width: 1024px) {
+    .row-item {
+        flex: 0 0 calc(100% / 4 - 0.5rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .row-item {
+        flex: 0 0 calc(100% / 2.5 - 0.5rem);
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+    }
+}

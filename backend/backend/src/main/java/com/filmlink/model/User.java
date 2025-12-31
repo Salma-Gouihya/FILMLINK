@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Node("User")
+@Node("Utilisateur")
 @Data
 public class User {
     @Id @GeneratedValue
@@ -23,8 +23,9 @@ public class User {
     @Property(name = "password")
     private String password;
     
-    @Relationship(type = "WATCHED", direction = Relationship.Direction.OUTGOING)
-    private Set<Film> watchedFilms = new HashSet<>();
+    // Mapped "AIME" relationship as requested
+    @Relationship(type = "AIME", direction = Relationship.Direction.OUTGOING)
+    private Set<Film> likedFilms = new HashSet<>();
     
     @Relationship(type = "RATED", direction = Relationship.Direction.OUTGOING)
     private Set<Rating> ratings = new HashSet<>();
@@ -52,7 +53,6 @@ public class User {
                            .collect(Collectors.toSet());
     }
     
-    // Ajout des getters manquants pour UserPrincipal
     public Long getId() {
         return id;
     }
