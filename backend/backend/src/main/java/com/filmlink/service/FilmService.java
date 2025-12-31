@@ -17,7 +17,7 @@ public class FilmService {
         return filmRepository.findAllWithRelationships();
     }
 
-    public Film getFilmById(Long id) {
+    public Film getFilmById(String id) {
         return filmRepository.findById(id).orElse(null);
     }
 
@@ -37,11 +37,15 @@ public class FilmService {
         return filmRepository.save(film);
     }
 
-    public void deleteFilm(Long id) {
+    public void deleteFilm(String id) {
         filmRepository.deleteById(id);
     }
 
-    public List<Film> getRecommendations(Long userId) {
+    public List<Film> getRecommendations(String userId) {
         return filmRepository.findRecommendationsByUserId(userId);
+    }
+
+    public List<Film> getCollaborativeRecommendations(String userId) {
+        return filmRepository.findCollaborativeRecommendations(userId);
     }
 }

@@ -9,18 +9,18 @@ import java.util.Set;
 @Node("Film")
 @Data
 public class Film {
-    @Id @GeneratedValue
-    private Long id;
-    
-    @Property("titre")
+    @Id
+    private String id;
+
+    @Property("title")
     private String title;
     
-    @Property("annee")
+    @Property("year")
     private Integer releaseYear;
     
     private String description;
     
-    @Property("poster_url")
+    @Property("posterUrl")
     private String posterUrl;
     
     private String tagline;
@@ -29,24 +29,30 @@ public class Film {
         return releaseYear != null ? releaseYear.toString() : "";
     }
     
-    @Relationship(type = "APPARTIENT_A", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "HAS_GENRE", direction = Relationship.Direction.OUTGOING)
+    @lombok.EqualsAndHashCode.Exclude
     private Set<Genre> genres = new HashSet<>();
     
-    @Relationship(type = "A_JOUE", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = "ACTED_IN", direction = Relationship.Direction.INCOMING)
+    @lombok.EqualsAndHashCode.Exclude
     private Set<Actor> actors = new HashSet<>();
     
-    // Updated to match User's "AIME" relationship
+    // Updated to match User's "LIKED" relationship
     @JsonIgnore
-    @Relationship(type = "AIME", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = "LIKED", direction = Relationship.Direction.INCOMING)
+    @lombok.EqualsAndHashCode.Exclude
     private Set<User> likedBy = new HashSet<>();
     
-    // Keeping RATED as is or removing if not in new spec, keeping for now
     @Relationship(type = "RATED", direction = Relationship.Direction.INCOMING)
+    @lombok.EqualsAndHashCode.Exclude
     private Set<Rating> ratings = new HashSet<>();
     
-    public Film() {}
+    public Film() {
+        this.id = java.util.UUID.randomUUID().toString();
+    }
     
     public Film(String title, Integer releaseYear, String description) {
+        this();
         this.title = title;
         this.releaseYear = releaseYear;
         this.description = description;

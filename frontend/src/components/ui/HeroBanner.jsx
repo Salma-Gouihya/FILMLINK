@@ -1,28 +1,32 @@
-import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Play, Info } from 'lucide-react';
-import Button from '../ui/Button';
-import './HeroBanner.css';
+import Button from './Button';
 
-export default function HeroBanner({ film }) {
+export default function HeroBanner({ film, user }) {
+    const navigate = useNavigate();
     if (!film) return null;
 
+    const handleInfoClick = () => {
+        navigate(`/films/${film.id}`);
+    };
+
     return (
-        <div className="hero-banner" style={{ backgroundImage: `url(${film.posterUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2525&auto=format&fit=crop'})` }}>
+        <div className="hero-banner" style={{ backgroundImage: `url(${film.posterUrl || ''})` }}>
             <div className="hero-overlay">
                 <div className="hero-content">
                     <h1 className="hero-title">{film.title}</h1>
                     <div className="hero-meta">
                         <span className="match-score">98% Match</span>
-                        <span className="year">{film.released}</span>
+                        <span className="year">{film.releaseYear}</span>
                         <span className="age-rating">16+</span>
-                        <span className="duration">1h 55m</span>
+                        <span className="duration">2h 12m</span>
                     </div>
                     <p className="hero-synopsis">
-                        {film.tagline || "Plongez dans cette aventure cinématographique unique. Une expérience inoubliable vous attend dans ce chef-d'œuvre acclamé par la critique."}
+                        {film.description || "Plongez dans cette aventure cinématographique unique. Une expérience inoubliable vous attend dans ce chef-d'œuvre acclamé par la critique."}
                     </p>
                     <div className="hero-actions">
-                        <Button icon={Play} size="lg" className="mr-4">Lecture</Button>
-                        <Button icon={Info} variant="secondary" size="lg">Plus d'infos</Button>
+                        <Button icon={Play} size="lg" className="mr-4" onClick={() => navigate(`/films/${film.id}`)}>Lecture</Button>
+                        <Button icon={Info} variant="secondary" size="lg" onClick={handleInfoClick}>Plus d'infos</Button>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,103 @@
+.search-banner {
+    position: relative;
+    padding: 100px 4%;
+    background: linear-gradient(rgba(20, 20, 20, 0.7), rgba(20, 20, 20, 0.9)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    margin: 20px 4%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.search-banner-content {
+    max-width: 800px;
+    width: 100%;
+}
+
+.search-banner-content h1 {
+    font-size: 3rem;
+    color: white;
+    margin-bottom: 1rem;
+    font-weight: 800;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.search-banner-content p {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+}
+
+.search-banner-form {
+    display: flex;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 10px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.search-banner-input-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+}
+
+.search-banner-icon {
+    color: rgba(255, 255, 255, 0.6);
+    margin-right: 10px;
+}
+
+.search-banner-form input {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    width: 100%;
+    padding: 10px 0;
+    outline: none;
+}
+
+.search-banner-form input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.search-banner-button {
+    background: #e50914;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-banner-button:hover {
+    background: #f40a16;
+}
+
+@media (max-width: 768px) {
+    .search-banner-content h1 {
+        font-size: 2rem;
+    }
+
+    .search-banner-form {
+        flex-direction: column;
+        border-radius: 12px;
+        padding: 15px;
+    }
+
+    .search-banner-button {
+        width: 100%;
+        border-radius: 8px;
+    }
+}

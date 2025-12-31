@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RoleRepository extends Neo4jRepository<Role, Long> {
+public interface RoleRepository extends Neo4jRepository<Role, String> {
     Optional<Role> findByName(String name);
 }

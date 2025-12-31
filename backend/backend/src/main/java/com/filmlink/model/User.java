@@ -7,11 +7,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Node("Utilisateur")
+@Node("User")
 @Data
 public class User {
-    @Id @GeneratedValue
-    private Long id;
+    @Id
+    private String id;
     
     @Property(name = "username")
     private String username;
@@ -23,19 +23,25 @@ public class User {
     @Property(name = "password")
     private String password;
     
-    // Mapped "AIME" relationship as requested
-    @Relationship(type = "AIME", direction = Relationship.Direction.OUTGOING)
+    // Mapped "LIKED" relationship as requested
+    @Relationship(type = "LIKED", direction = Relationship.Direction.OUTGOING)
+    @lombok.EqualsAndHashCode.Exclude
     private Set<Film> likedFilms = new HashSet<>();
     
     @Relationship(type = "RATED", direction = Relationship.Direction.OUTGOING)
+    @lombok.EqualsAndHashCode.Exclude
     private Set<Rating> ratings = new HashSet<>();
     
     @Relationship(type = "HAS_ROLE", direction = Relationship.Direction.OUTGOING)
+    @lombok.EqualsAndHashCode.Exclude
     private Set<Role> roles = new HashSet<>();
     
-    public User() {}
+    public User() {
+        this.id = java.util.UUID.randomUUID().toString();
+    }
     
     public User(String username, String email, String password) {
+        this();
         this.username = username;
         this.email = email;
         this.password = password;
@@ -53,7 +59,7 @@ public class User {
                            .collect(Collectors.toSet());
     }
     
-    public Long getId() {
+    public String getId() {
         return id;
     }
     

@@ -8,6 +8,7 @@ import Home from './pages/Home'
 import FilmDetail from './pages/FilmDetail'
 import SearchPage from './pages/Search'
 import MyList from './pages/MyList'
+import Profile from './pages/Profile'
 function App() {
   const [token, setAuth] = useState(getAuthToken())
   const [user, setUser] = useState(null)
@@ -122,6 +123,7 @@ function App() {
           <Route path="/" element={<Home user={user} />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/mylist" element={<MyList user={user} />} />
+          <Route path="/profile" element={<Profile user={user} />} />
           <Route path="/films/:id" element={<FilmDetail user={user} />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

@@ -5,21 +5,25 @@ import org.springframework.data.neo4j.core.schema.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Node("Acteur")
+@Node("Actor")
 @Data
 public class Actor {
-    @Id @GeneratedValue
-    private Long id;
+    @Id
+    private String id;
     
-    @Property("nom")
+    @Property("name")
     private String name;
     
-    @Relationship(type = "A_JOUE", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "ACTED_IN", direction = Relationship.Direction.OUTGOING)
+    @lombok.EqualsAndHashCode.Exclude
     private Set<Film> films = new HashSet<>();
     
-    public Actor() {}
+    public Actor() {
+        this.id = java.util.UUID.randomUUID().toString();
+    }
     
     public Actor(String name) {
+        this();
         this.name = name;
     }
 }

@@ -64,6 +64,13 @@ public class SecurityConfig {
                     "/swagger-ui/**",
                     "/swagger-ui.html"
                 ).permitAll()
+                // Allow public read access to films, actors, and genres
+                .requestMatchers(
+                    org.springframework.http.HttpMethod.GET,
+                    "/api/films/**",
+                    "/api/actors/**",
+                    "/api/genres/**"
+                ).permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

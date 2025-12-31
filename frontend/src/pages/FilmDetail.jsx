@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Play, Plus, ThumbsUp, Star, Calendar, Clock, Share2 } from 'lucide-react';
+import { Play, Plus, ThumbsUp, Star, Calendar, Clock, Share2, Check, X } from 'lucide-react';
 import { getFilmById, getRecommendations } from '../api/films';
-import { addLike } from '../api/user';
+import { addLike, removeLike, getMyList } from '../api/user';
 import Button from '../components/ui/Button';
 import SectionRow from '../components/ui/SectionRow';
 import Loader from '../components/ui/Loader';
@@ -12,19 +12,26 @@ export default function FilmDetail({ user }) {
     const { id } = useParams();
     const [film, setFilm] = useState(null);
     const [recommendations, setRecommendations] = useState([]);
+    const [likedFilmIds, setLikedFilmIds] = useState(new Set());
     const [loading, setLoading] = useState(true);
+    const [isLiked, setIsLiked] = useState(false);
 
     useEffect(() => {
         async function loadData() {
             try {
                 setLoading(true);
-                const filmData = await getFilmById(id);
-                setFilm(filmData);
+                const [filmData, likedData] = await Promise.all([
+                    getFilmById(id),
+                    user?.id ? getMyList(user.id).catch(() => []) : []
+                ]);
 
-                // Fetch recommendations based on this film or user
+                setFilm(filmData);
+                const likedIds = new Set((likedData || []).map(f => f.id));
+                setLikedFilmIds(likedIds);
+                setIsLiked(likedIds.has(filmData.id));
+
                 if (user) {
                     const recs = await getRecommendations(user.id);
-                    // Filter out current film
                     setRecommendations(recs.filter(f => f.id !== filmData.id));
                 }
             } catch (err) {
@@ -40,6 +47,21 @@ export default function FilmDetail({ user }) {
         }
     }, [id, user]);
 
+    const handleToggleLike = async () => {
+        if (!user) return alert("Veuillez vous connecter");
+        try {
+            if (isLiked) {
+                await removeLike(user.id, film.id);
+                setIsLiked(false);
+            } else {
+                await addLike(user.id, film.id);
+                setIsLiked(true);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     if (loading) {
         return (
             <div className="flex-center" style={{ height: '100vh' }}>
@@ -52,95 +74,95 @@ export default function FilmDetail({ user }) {
         return <div className="flex-center text-white">Film introuvable</div>;
     }
 
-    // Placeholder match score
-    const matchScore = 95;
-
     return (
         <div className="film-detail-page">
-            {/* Hero Backdrop */}
-            <div className="detail-hero" style={{ backgroundImage: `url(${film.posterUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2525&auto=format&fit=crop'})` }}>
+            <div className="detail-hero" style={{ backgroundImage: `url(${film.posterUrl || ''})` }}>
                 <div className="detail-overlay">
                     <div className="detail-content">
                         <h1 className="detail-title">{film.title}</h1>
 
                         <div className="detail-meta">
-                            <span className="match-score">{matchScore}% Match</span>
-                            <span className="year">{film.released || '2023'}</span>
+                            <span className="match-score">98% Match</span>
+                            <span className="year">{film.releaseYear}</span>
                             <span className="age-rating">16+</span>
-                            <span className="duration flex-center"><Clock size={16} className="mr-2" /> 1h 55m</span>
+                            <span className="duration flex-center"><Clock size={16} className="mr-2" /> 2h 08m</span>
                         </div>
 
                         <div className="detail-actions">
                             <Button icon={Play} size="lg" className="mr-4">Lecture</Button>
+
                             <Button
-                                icon={Plus}
-                                variant="secondary"
+                                icon={isLiked ? Check : Plus}
+                                variant={isLiked ? "primary" : "secondary"}
                                 className="mr-2"
-                                onClick={async () => {
-                                    if (!user) return alert("Connectez-vous pour ajouter à votre liste");
-                                    await addLike(user.id, film.id);
-                                    alert("Ajouté à votre liste !");
-                                }}
+                                onClick={handleToggleLike}
                             >
-                                Ma Liste
+                                {isLiked ? "Dans ma liste" : "Ma Liste"}
                             </Button>
-                            <Button
-                                icon={ThumbsUp}
-                                variant="secondary"
-                                className="mr-2"
-                                onClick={async () => {
-                                    if (!user) return alert("Connectez-vous pour aimer");
-                                    await addLike(user.id, film.id);
-                                    alert("J'aime !");
-                                }}
+
+                            <button
+                                className={`detail-icon-btn ${isLiked ? 'active' : ''}`}
+                                onClick={handleToggleLike}
                             >
-                                J'aime
-                            </Button>
-                            <Button icon={Share2} variant="ghost">Partager</Button>
+                                <ThumbsUp size={24} fill={isLiked ? "currentColor" : "none"} />
+                            </button>
                         </div>
 
                         <p className="detail-synopsis">
-                            {film.tagline || "Une aventure épique qui repousse les limites de l'imagination. Plongez dans un univers où chaque choix compte et où le destin de tous ne tient qu'à un fil."}
+                            {film.description || "Aucun résumé disponible."}
                         </p>
 
                         <div className="detail-tags">
                             <span className="tag-label">Genres:</span>
-                            <span className="tag-value">{film.tagline ? 'Science Fiction, Action' : 'Drame, Suspense'}</span>
+                            <span className="tag-value">
+                                {film.genres?.map(g => g.name).join(', ') || 'Non spécifié'}
+                            </span>
                         </div>
                     </div>
                 </div>
                 <div className="detail-fade-bottom"></div>
             </div>
 
-            {/* Content Section */}
             <div className="detail-body">
                 <div className="detail-columns">
                     <div className="detail-left">
                         <h3>Distribution</h3>
                         <div className="cast-grid">
-                            {/* Mock Cast */}
-                            {['Leonardo DiCaprio', 'Joseph Gordon-Levitt', 'Elliot Page', 'Tom Hardy'].map(actor => (
-                                <div key={actor} className="cast-item">{actor}</div>
-                            ))}
+                            {film.actors && film.actors.length > 0 ? (
+                                film.actors.map(actor => (
+                                    <div key={actor.id} className="cast-item">
+                                        <div className="actor-name">{actor.name}</div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>Information non disponible</p>
+                            )}
                         </div>
                     </div>
 
                     <div className="detail-right">
                         <h3>Détails</h3>
                         <div className="meta-row">
-                            <span className="label">Réalisateur:</span>
-                            <span className="value">Christopher Nolan</span>
-                        </div>
-                        <div className="meta-row">
                             <span className="label">Année:</span>
-                            <span className="value">{film.released}</span>
+                            <span className="value">{film.releaseYear}</span>
                         </div>
+                        {film.genres && (
+                            <div className="meta-row">
+                                <span className="label">Catégories:</span>
+                                <span className="value">{film.genres.map(g => g.name).join(', ')}</span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 {recommendations.length > 0 && (
                     <div className="recommendations-section">
-                        <SectionRow title="Titres similaires" films={recommendations} />
+                        <SectionRow
+                            title="Titres similaires"
+                            films={recommendations}
+                            user={user}
+                            likedFilmIds={likedFilmIds}
+                        />
                     </div>
                 )}
             </div>

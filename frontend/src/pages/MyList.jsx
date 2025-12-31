@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { getMyList } from '../api/user';
+import { getRecommendations } from '../api/films';
 import SectionRow from '../components/ui/SectionRow';
 import Loader from '../components/ui/Loader';
 import FilmCard from '../components/ui/FilmCard';
-// import './Home.css'; // File does not exist, using global styles
+import SearchBanner from '../components/ui/SearchBanner';
 
 export default function MyList({ user }) {
     const [films, setFilms] = useState([]);
@@ -11,13 +11,13 @@ export default function MyList({ user }) {
 
     useEffect(() => {
         async function loadData() {
-            if (user) {
+            if (user?.id) {
                 try {
                     setLoading(true);
-                    const list = await getMyList(user.id);
-                    setFilms(list);
+                    const recs = await getRecommendations(user.id);
+                    setFilms(recs || []);
                 } catch (e) {
-                    console.error("Failed to load list", e);
+                    console.error("Failed to load recommendations", e);
                 } finally {
                     setLoading(false);
                 }
@@ -26,23 +26,33 @@ export default function MyList({ user }) {
         loadData();
     }, [user]);
 
-    if (loading) return <div className="flex-center h-screen"><Loader /></div>;
+    if (loading) return <div className="flex-center" style={{ height: '100vh' }}><Loader /></div>;
 
     return (
-        <div className="page-container" style={{ paddingTop: '80px', paddingLeft: '4%', paddingRight: '4%', minHeight: '100vh', background: 'var(--bg-main)' }}>
-            <h1 className="text-white text-3xl mb-6">Ma Liste</h1>
+        <div className="mylist-page" style={{ paddingTop: '80px', minHeight: '100vh', background: '#141414' }}>
+            <SearchBanner
+                title="Recommandés pour vous"
+                subtitle="Basé sur vos goûts et vos films visionnés"
+            />
 
-            {films.length === 0 ? (
-                <div className="text-gray-400">
-                    Votre liste est vide. Ajoutez des films pour les retrouver ici.
-                </div>
-            ) : (
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    {films.map(film => (
-                        <FilmCard key={film.id} film={film} />
-                    ))}
-                </div>
-            )}
+            <div style={{ padding: '0 4%' }}>
+                {films.length === 0 ? (
+                    <div style={{ color: '#888', textAlign: 'center', marginTop: '4rem' }}>
+                        Aucune recommandation pour le moment. Découvrez plus de films pour affiner vos goûts !
+                    </div>
+                ) : (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '2rem', marginTop: '2rem' }}>
+                        {films.map(film => (
+                            <FilmCard
+                                key={film.id}
+                                film={film}
+                                user={user}
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
+            <div style={{ height: '100px' }}></div>
         </div>
     );
 }

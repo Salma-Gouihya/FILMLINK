@@ -21,7 +21,7 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Film> getFilmById(@PathVariable Long id) {
+    public ResponseEntity<Film> getFilmById(@PathVariable String id) {
         Film film = filmService.getFilmById(id);
         return film != null ? ResponseEntity.ok(film) : ResponseEntity.notFound().build();
     }
@@ -47,12 +47,17 @@ public class FilmController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFilm(@PathVariable Long id) {
+    public void deleteFilm(@PathVariable String id) {
         filmService.deleteFilm(id);
     }
 
     @GetMapping("/recommendations/{userId}")
-    public List<Film> getRecommendations(@PathVariable Long userId) {
+    public List<Film> getRecommendations(@PathVariable String userId) {
         return filmService.getRecommendations(userId);
+    }
+
+    @GetMapping("/recommendations/collaborative/{userId}")
+    public List<Film> getCollaborativeRecommendations(@PathVariable String userId) {
+        return filmService.getCollaborativeRecommendations(userId);
     }
 }

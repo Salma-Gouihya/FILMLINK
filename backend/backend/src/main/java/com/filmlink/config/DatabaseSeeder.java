@@ -26,92 +26,75 @@ public class DatabaseSeeder {
     
     @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
+    private org.springframework.data.neo4j.core.Neo4jClient neo4jClient;
     
     @Bean
     CommandLineRunner initDatabase() {
         return args -> {
-            System.out.println("🔄 Vérification des données de la base...");
-
-            // 1. ACTEURS (Find or Create)
-            Actor leo = createOrFindActor("Leonardo DiCaprio");
-            Actor cillian = createOrFindActor("Cillian Murphy");
-            Actor keanu = createOrFindActor("Keanu Reeves");
-            Actor tom = createOrFindActor("Tom Hardy");
-
-            // 2. GENRES (Find or Create)
-            Genre scifi = createOrFindGenre("Science Fiction");
-            Genre action = createOrFindGenre("Action");
-            Genre drama = createOrFindGenre("Drame");
-
-            // 3. FILMS (Find or Create)
-            Film inception = createOrUpdateFilm("Inception", 2010, 
-                "Un voleur qui s'empare de secrets d'entreprise...", 
-                "https://image.tmdb.org/t/p/original/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
-                new HashSet<>(Arrays.asList(scifi, action)),
-                new HashSet<>(Arrays.asList(leo, cillian, tom)));
-
-            // Création du film The Dark Knight
-            createOrUpdateFilm("The Dark Knight", 2008, 
-                "Le Joker sème le chaos à Gotham.", 
-                "https://image.tmdb.org/t/p/original/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-                new HashSet<>(Arrays.asList(action, drama)),
-                new HashSet<>(Arrays.asList(cillian)));
-
-            Film matrix = createOrUpdateFilm("Matrix", 1999, 
-                "Neo découvre la vérité sur la matrice.", 
-                "https://image.tmdb.org/t/p/original/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
-                new HashSet<>(Arrays.asList(scifi, action)),
-                new HashSet<>(Arrays.asList(keanu)));
-
-            // 4. UTILISATEUR (Find or Create & Update favorites)
-            User salma = userRepository.findByUsernameOrEmail("salma")
-                    .orElse(new User("salma", "salma@gmail.com", encoder.encode("gouihya@2025")));
+            System.out.println("🔄 Cleaning and Seeding Database...");
             
-            if (salma.getId() == null) {
-                userRepository.save(salma);
-                salma = userRepository.findByUsernameOrEmail("salma").get();
-            }
+            // Clear database for a clean start
+            neo4jClient.query("MATCH (n) DETACH DELETE n").run();
 
-            // Mise à jour des favoris (AIME)
-            // On ajoute sans doublon
-            // Note: simple addition to Set works for uniqueness if equals/hashcode are correct
-            // But with Neo4j-OGM sometimes refreshing is better
+            // 1. ACTORS
+            Actor leo = new Actor("Leonardo DiCaprio");
+            Actor cillian = new Actor("Cillian Murphy");
+            Actor keanu = new Actor("Keanu Reeves");
+            Actor tom = new Actor("Tom Hardy");
+            Actor carrie = new Actor("Carrie-Anne Moss");
+            Actor christian = new Actor("Christian Bale");
+            Actor heath = new Actor("Heath Ledger");
+
+            // 2. GENRES
+            Genre scifi = new Genre("Science Fiction");
+            Genre action = new Genre("Action");
+            Genre drama = new Genre("Drama");
+            Genre crime = new Genre("Crime");
+            Genre thriller = new Genre("Thriller");
+
+            // 3. FILMS
+            Film inception = new Film("Inception", 2010, "A thief who steals corporate secrets through the use of dream-sharing technology.");
+            inception.setPosterUrl("https://image.tmdb.org/t/p/original/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg");
+            inception.setGenres(new HashSet<>(Arrays.asList(scifi, action, thriller)));
+            inception.setActors(new HashSet<>(Arrays.asList(leo, cillian, tom)));
+
+            Film darkKnight = new Film("The Dark Knight", 2008, "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham.");
+            darkKnight.setPosterUrl("https://image.tmdb.org/t/p/original/qJ2tW6WMUDux911r6m7haRef0WH.jpg");
+            darkKnight.setGenres(new HashSet<>(Arrays.asList(action, crime, drama)));
+            darkKnight.setActors(new HashSet<>(Arrays.asList(christian, heath, cillian)));
+
+            Film matrix = new Film("The Matrix", 1999, "A computer hacker learns from mysterious rebels about the true nature of his reality.");
+            matrix.setPosterUrl("https://image.tmdb.org/t/p/original/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg");
+            matrix.setGenres(new HashSet<>(Arrays.asList(scifi, action)));
+            matrix.setActors(new HashSet<>(Arrays.asList(keanu, carrie)));
+
+            Film interstellar = new Film("Interstellar", 2014, "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.");
+            interstellar.setPosterUrl("https://image.tmdb.org/t/p/original/gEU2QniE6EzuV6vfbqc97GvYvUo.jpg");
+            interstellar.setGenres(new HashSet<>(Arrays.asList(scifi, drama)));
+
+            Film pulpFiction = new Film("Pulp Fiction", 1994, "The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence.");
+            pulpFiction.setPosterUrl("https://image.tmdb.org/t/p/original/d5iIl9h9btztp9qxcc67G9Z0uib.jpg");
+            pulpFiction.setGenres(new HashSet<>(Arrays.asList(crime, drama)));
+
+            filmRepository.saveAll(Arrays.asList(inception, darkKnight, matrix, interstellar, pulpFiction));
+
+            // 4. USERS
+            User salma = new User("salma", "salma@gmail.com", encoder.encode("gouihya@2025"));
             salma.getLikedFilms().add(inception);
             salma.getLikedFilms().add(matrix);
             
-            userRepository.save(salma);
-            System.out.println("✅ Données vérifiées et mises à jour.");
+            User bob = new User("bob", "bob@gmail.com", encoder.encode("password"));
+            // Bob likes Inception and Matrix too (to connect with Salma)
+            bob.getLikedFilms().add(inception);
+            bob.getLikedFilms().add(matrix);
+            // Bob also likes Interstellar (which Salma hasn't seen yet)
+            bob.getLikedFilms().add(interstellar);
+
+            userRepository.saveAll(Arrays.asList(salma, bob));
+            
+            System.out.println("✅ Database Seeded successfully with USERS, FILMS and RELATIONSHIPS.");
         };
-    }
-
-    private Actor createOrFindActor(String name) {
-        // Naive implementation matching existing repository capability or lack thereof
-        // If ActorRepository doesn't exist, we assume Film saves cascade, 
-        // but to find them we need a repository or query. 
-        // Simplified: Just new Actor(name) risks duplicates if we save them individually.
-        // But since we cascade from Film, we rely on Film update.
-        return new Actor(name); 
-    }
-
-    private Genre createOrFindGenre(String name) {
-        return new Genre(name);
-    }
-
-    private Film createOrUpdateFilm(String title, int year, String desc, String poster, 
-                                  java.util.Set<Genre> genres, java.util.Set<Actor> actors) {
-        List<Film> existing = filmRepository.findByTitleContaining(title);
-        Film film;
-        if (existing.isEmpty()) {
-            film = new Film(title, year, desc);
-            film.setPosterUrl(poster);
-            film.setGenres(genres);
-            film.setActors(actors);
-            filmRepository.save(film);
-            System.out.println("✨ Film créé : " + title);
-        } else {
-            film = existing.get(0);
-            // Optional: Update missing access/fields if needed
-        }
-        return film;
     }
 }

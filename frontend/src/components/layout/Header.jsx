@@ -27,10 +27,8 @@ export default function Header({ user, onLogout }) {
                     <div className="logo">FILMLINK</div>
 
                     <nav className={`main-nav ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-                        <nav className={`main-nav ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-                            <Link to="/" className="nav-item active">Accueil</Link>
-                            <Link to="/mylist" className="nav-item">Ma liste</Link>
-                        </nav>
+                        <Link to="/" className="nav-item active">Accueil</Link>
+                        <Link to="/mylist" className="nav-item">Ma liste</Link>
                     </nav>
                 </div>
 
@@ -56,7 +54,7 @@ export default function Header({ user, onLogout }) {
                             {user?.username?.charAt(0).toUpperCase() || <User />}
                         </div>
                         <div className="dropdown">
-                            <span className="dropdown-item">Profil</span>
+                            <Link to="/profile" className="dropdown-item">Profil</Link>
                             <span className="dropdown-item" onClick={onLogout}>Déconnexion</span>
                         </div>
                     </div>

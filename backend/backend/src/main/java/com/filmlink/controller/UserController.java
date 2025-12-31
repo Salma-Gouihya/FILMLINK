@@ -16,19 +16,19 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/{userId}/likes/{filmId}")
-    public ResponseEntity<?> addLike(@PathVariable Long userId, @PathVariable Long filmId) {
+    public ResponseEntity<?> addLike(@PathVariable String userId, @PathVariable String filmId) {
         userService.addLike(userId, filmId);
         return ResponseEntity.ok().body("Film ajouté aux favoris");
     }
 
     @DeleteMapping("/{userId}/likes/{filmId}")
-    public ResponseEntity<?> removeLike(@PathVariable Long userId, @PathVariable Long filmId) {
+    public ResponseEntity<?> removeLike(@PathVariable String userId, @PathVariable String filmId) {
         userService.removeLike(userId, filmId);
         return ResponseEntity.ok().body("Film retiré des favoris");
     }
 
     @GetMapping("/{userId}/likes")
-    public List<Film> getLikedFilms(@PathVariable Long userId) {
+    public List<Film> getLikedFilms(@PathVariable String userId) {
         return userService.getLikedFilms(userId);
     }
 }

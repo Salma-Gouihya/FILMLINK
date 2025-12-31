@@ -8,18 +8,22 @@ import java.util.Set;
 @Node("Role")
 @Data
 public class Role {
-    @Id @GeneratedValue
-    private Long id;
+    @Id
+    private String id;
     
     @Property(name = "name")
     private String name;
     
     @Relationship(type = "HAS_ROLE", direction = Relationship.Direction.INCOMING)
+    @lombok.EqualsAndHashCode.Exclude
     private Set<User> users = new HashSet<>();
     
-    public Role() {}
+    public Role() {
+        this.id = java.util.UUID.randomUUID().toString();
+    }
     
     public Role(String name) {
+        this();
         this.name = name;
     }
     

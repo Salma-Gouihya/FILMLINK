@@ -9,31 +9,43 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FilmRepository extends Neo4jRepository<Film, Long> {
-    // Note: 'titre' property usage in custom queries
-    @Query("MATCH (f:Film) WHERE f.titre CONTAINS $title RETURN f")
+public interface FilmRepository extends Neo4jRepository<Film, String> {
+    
+    @Query("MATCH (f:Film) WHERE f.title CONTAINS $title RETURN f")
     List<Film> findByTitleContaining(@Param("title") String title);
 
-    @Query("MATCH (f:Film) WHERE toLower(f.titre) CONTAINS toLower($title) RETURN f")
+    @Query("MATCH (f:Film) WHERE toLower(f.title) CONTAINS toLower($title) RETURN f")
     List<Film> findByTitleContainingIgnoreCase(@Param("title") String title);
     
-    @Query("MATCH (f:Film)-[:APPARTIENT_A]->(g:Genre {name: $genreName}) RETURN f")
+    @Query("MATCH (f:Film)-[:HAS_GENRE]->(g:Genre {name: $genreName}) RETURN f")
     List<Film> findByGenre(@Param("genreName") String genreName);
     
-    @Query("MATCH (f:Film)<-[:A_JOUE]-(a:Acteur {nom: $actorName}) RETURN f")
+    @Query("MATCH (f:Film)<-[:ACTED_IN]-(a:Actor {name: $actorName}) RETURN f")
     List<Film> findByActor(@Param("actorName") String actorName);
     
-    @Query("MATCH (f:Film)<-[:AIME]-(u:Utilisateur {id: $userId}) RETURN f")
-    List<Film> findWatchedByUser(@Param("userId") Long userId);
+    @Query("MATCH (f:Film)<-[:LIKED]-(u:User) WHERE u.id = $userId RETURN f")
+    List<Film> findWatchedByUser(@Param("userId") String userId);
 
-    @Query("MATCH (u:Utilisateur {id: $userId})-[:AIME]->(f:Film)-[:APPARTIENT_A]->(g:Genre)<-[:APPARTIENT_A]-(rec:Film) " +
-           "WHERE NOT (u)-[:AIME]->(rec) AND f <> rec " +
-           "GROUP BY rec ORDER BY COUNT(g) DESC LIMIT 10")
-    List<Film> findRecommendationsByUserId(@Param("userId") Long userId);
+    // Content-Based Filtering (based on genres)
+    @Query("MATCH (u:User {id: $userId})-[:LIKED]->(f:Film)-[:HAS_GENRE]->(g:Genre)<-[:HAS_GENRE]-(rec:Film) " +
+           "WHERE NOT (u)-[:LIKED]->(rec) AND f.id <> rec.id " +
+           "WITH rec, COUNT(g) AS score " +
+           "ORDER BY score DESC LIMIT 10 " +
+           "RETURN rec")
+    List<Film> findRecommendationsByUserId(@Param("userId") String userId);
+
+    // Collaborative Filtering (Users who liked this also liked...)
+    @Query("MATCH (u:User {id: $userId})-[:LIKED]->(f:Film)<-[:LIKED]-(other:User) " +
+           "MATCH (other)-[:LIKED]->(rec:Film) " +
+           "WHERE NOT (u)-[:LIKED]->(rec) AND rec.id <> f.id " +
+           "WITH rec, COUNT(*) AS frequency " +
+           "ORDER BY frequency DESC LIMIT 10 " +
+           "RETURN rec")
+    List<Film> findCollaborativeRecommendations(@Param("userId") String userId);
     
-    @Query("MATCH (f:Film) OPTIONAL MATCH (f)-[:APPARTIENT_A]->(g:Genre) " +
-           "OPTIONAL MATCH (f)<-[:A_JOUE]-(a:Acteur) " +
-           "WITH f, COLLECT(DISTINCT g) AS genres, COLLECT(DISTINCT a) AS actors " +
-           "RETURN f, genres, actors")
+    @Query("MATCH (f:Film) " +
+           "OPTIONAL MATCH (f)-[r1:HAS_GENRE]->(g:Genre) " +
+           "OPTIONAL MATCH (a:Actor)-[r2:ACTED_IN]->(f) " +
+           "RETURN f, collect(r1), collect(g), collect(r2), collect(a)")
     List<Film> findAllWithRelationships();
 }
