@@ -57,55 +57,21 @@ export default function Home({ user }) {
     }
 
     // Segment films by genre (more robust matching)
-    const actionFilms = (films || []).filter(f => (f.genres?.some(g => g.name.toLowerCase().includes('action'))));
-    const dramaFilms = (films || []).filter(f => (f.genres?.some(g => g.name.toLowerCase().includes('drame') || g.name.toLowerCase().includes('drama'))));
-    const scifiFilms = (films || []).filter(f => (f.genres?.some(g => g.name.toLowerCase().includes('sci-fi') || g.name.toLowerCase().includes('science'))));
+    const actionFilms = (films || []).filter(f => f.genres && f.genres.some(g => g.name.match(/action/i)));
+    const dramaFilms = (films || []).filter(f => f.genres && f.genres.some(g => g.name.match(/drama|drame/i)));
+    const scifiFilms = (films || []).filter(f => f.genres && f.genres.some(g => g.name.match(/science|sci-fi/i)));
+
+    // Combine unique recommendations
+    const allRecommendations = Array.from(new Set([...recFilms, ...collabRecs].map(f => f.id)))
+        .map(id => [...recFilms, ...collabRecs].find(f => f.id === id));
 
     return (
         <div className="home-page">
             <div style={{ paddingTop: '100px', position: 'relative', zIndex: 10 }}>
-                {recFilms.length > 0 && (
+                {allRecommendations.length > 0 && (
                     <SectionRow
-                        title="Inspiré par vos goûts (Genres)"
-                        films={recFilms}
-                        user={user}
-                        likedFilmIds={likedFilmIds}
-                    />
-                )}
-
-                {collabRecs.length > 0 && (
-                    <SectionRow
-                        title="Ce que les autres cinéphiles aiment"
-                        films={collabRecs}
-                        user={user}
-                        likedFilmIds={likedFilmIds}
-                    />
-                )}
-
-                {actionFilms.length > 0 && (
-                    <SectionRow
-                        title="Action & Aventure"
-                        films={actionFilms}
-                        user={user}
-                        likedFilmIds={likedFilmIds}
-                    />
-                )}
-
-                <SearchBanner />
-
-                {scifiFilms.length > 0 && (
-                    <SectionRow
-                        title="Science Fiction"
-                        films={scifiFilms}
-                        user={user}
-                        likedFilmIds={likedFilmIds}
-                    />
-                )}
-
-                {dramaFilms.length > 0 && (
-                    <SectionRow
-                        title="Drames Incontournables"
-                        films={dramaFilms}
+                        title="Recommandé pour vous"
+                        films={allRecommendations}
                         user={user}
                         likedFilmIds={likedFilmIds}
                     />

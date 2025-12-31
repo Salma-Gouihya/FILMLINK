@@ -28,7 +28,6 @@ export default function Header({ user, onLogout }) {
 
                     <nav className={`main-nav ${mobileMenuOpen ? 'mobile-open' : ''}`}>
                         <Link to="/" className="nav-item active">Accueil</Link>
-                        <Link to="/mylist" className="nav-item">Ma liste</Link>
                     </nav>
                 </div>
 
