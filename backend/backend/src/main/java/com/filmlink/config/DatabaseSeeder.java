@@ -33,10 +33,12 @@ public class DatabaseSeeder {
     @Bean
     CommandLineRunner initDatabase() {
         return args -> {
-            System.out.println("🔄 Cleaning and Seeding Database...");
+            if (filmRepository.count() > 0) {
+                System.out.println("✅ Data already exists. Skipping seeding.");
+                return;
+            }
             
-            // Clear database for a clean start
-            neo4jClient.query("MATCH (n) DETACH DELETE n").run();
+            System.out.println("🔄 Seeding Database (it's currently empty)...");
 
             // 1. ACTORS
             Actor leo = new Actor("Leonardo DiCaprio");

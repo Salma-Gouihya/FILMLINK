@@ -66,10 +66,10 @@
 
 .film-card-wrapper:hover .film-info-hover {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1.15);
+    transform: translate(-50%, -50%) scale(1);
     pointer-events: auto;
-    width: 300px;
-    /* Specific width for hover card */
+    width: 100%;
+    /* Match exactly the frame size */
 }
 
 .film-poster-mini-container {

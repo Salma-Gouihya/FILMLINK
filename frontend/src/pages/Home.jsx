@@ -82,6 +82,7 @@ export default function Home({ user }) {
                     films={films || []}
                     user={user}
                     likedFilmIds={likedFilmIds}
+                    isGrid={true}
                 />
             </div>
 
