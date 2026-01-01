@@ -94,7 +94,7 @@
     flex-direction: column;
 }
 
-.user-menu:hover .dropdown {
+.dropdown.active {
     display: flex;
 }
 

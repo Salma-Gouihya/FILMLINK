@@ -13,7 +13,7 @@ export default function SearchPage() {
     const [loading, setLoading] = useState(false);
 
     // Filter states
-    const [genreFilter, setGenreFilter] = useState('All');
+
     const [yearFilter, setYearFilter] = useState('All');
     const [sortOrder, setSortOrder] = useState('newest');
 
@@ -38,11 +38,7 @@ export default function SearchPage() {
     }, [query]);
 
     // Unique genres and years for filters
-    const genres = useMemo(() => {
-        const set = new Set(['All']);
-        results.forEach(f => f.genres?.forEach(g => set.add(g.name)));
-        return Array.from(set);
-    }, [results]);
+
 
     const years = useMemo(() => {
         const set = new Set(['All']);
@@ -53,9 +49,7 @@ export default function SearchPage() {
     const filteredResults = useMemo(() => {
         let list = [...results];
 
-        if (genreFilter !== 'All') {
-            list = list.filter(f => f.genres?.some(g => g.name === genreFilter));
-        }
+
 
         if (yearFilter !== 'All') {
             list = list.filter(f => f.releaseYear?.toString() === yearFilter);
@@ -68,7 +62,7 @@ export default function SearchPage() {
         }
 
         return list;
-    }, [results, genreFilter, yearFilter, sortOrder]);
+    }, [results, yearFilter, sortOrder]);
 
     return (
         <div className="search-page" style={{ paddingTop: '100px', paddingLeft: '4%', paddingRight: '4%', minHeight: '100vh', background: '#141414' }}>
@@ -82,14 +76,7 @@ export default function SearchPage() {
                         <Filter size={18} /> <span>Filtrer par:</span>
                     </div>
 
-                    <select
-                        value={genreFilter}
-                        onChange={e => setGenreFilter(e.target.value)}
-                        style={{ background: '#333', color: 'white', border: 'none', padding: '0.5rem', borderRadius: '4px' }}
-                    >
-                        <option value="All">Tous les Genres</option>
-                        {genres.filter(g => g !== 'All').map(g => <option key={g} value={g}>{g}</option>)}
-                    </select>
+
 
                     <select
                         value={yearFilter}

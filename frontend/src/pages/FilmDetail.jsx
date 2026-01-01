@@ -91,18 +91,10 @@ export default function FilmDetail({ user }) {
                         <div className="detail-actions">
                             <Button icon={Play} size="lg" className="mr-4">Lecture</Button>
 
-                            <Button
-                                icon={isLiked ? Check : Plus}
-                                variant={isLiked ? "primary" : "secondary"}
-                                className="mr-2"
-                                onClick={handleToggleLike}
-                            >
-                                {isLiked ? "Dans ma liste" : "Ma Liste"}
-                            </Button>
-
                             <button
                                 className={`detail-icon-btn ${isLiked ? 'active' : ''}`}
                                 onClick={handleToggleLike}
+                                title={isLiked ? "Retirer des favoris" : "Ajouter aux favoris"}
                             >
                                 <ThumbsUp size={24} fill={isLiked ? "currentColor" : "none"} />
                             </button>
@@ -112,11 +104,28 @@ export default function FilmDetail({ user }) {
                             {film.description || "Aucun résumé disponible."}
                         </p>
 
-                        <div className="detail-tags">
-                            <span className="tag-label">Genres:</span>
-                            <span className="tag-value">
-                                {film.genres?.map(g => g.name).join(', ') || 'Non spécifié'}
-                            </span>
+                        <div className="detail-info-grid">
+                            {film.genres && film.genres.length > 0 && (
+                                <div className="info-group">
+                                    <span className="info-label">Genres</span>
+                                    <div className="info-badges">
+                                        {film.genres.map((g, i) => (
+                                            <span key={i} className="info-badge">{g.name}</span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {film.actors && film.actors.length > 0 && (
+                                <div className="info-group">
+                                    <span className="info-label">Distribution</span>
+                                    <div className="info-badges">
+                                        {film.actors.map((a, i) => (
+                                            <span key={i} className="info-badge actor">{a.name}</span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -124,37 +133,6 @@ export default function FilmDetail({ user }) {
             </div>
 
             <div className="detail-body">
-                <div className="detail-columns">
-                    <div className="detail-left">
-                        <h3>Distribution</h3>
-                        <div className="cast-grid">
-                            {film.actors && film.actors.length > 0 ? (
-                                film.actors.map(actor => (
-                                    <div key={actor.id} className="cast-item">
-                                        <div className="actor-name">{actor.name}</div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p>Information non disponible</p>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="detail-right">
-                        <h3>Détails</h3>
-                        <div className="meta-row">
-                            <span className="label">Année:</span>
-                            <span className="value">{film.releaseYear}</span>
-                        </div>
-                        {film.genres && (
-                            <div className="meta-row">
-                                <span className="label">Catégories:</span>
-                                <span className="value">{film.genres.map(g => g.name).join(', ')}</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
                 {recommendations.length > 0 && (
                     <div className="recommendations-section">
                         <SectionRow

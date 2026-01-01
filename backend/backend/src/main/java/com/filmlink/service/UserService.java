@@ -31,14 +31,7 @@ public class UserService {
     }
 
     public void removeLike(String userId, String filmId) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        Optional<Film> filmOpt = filmRepository.findById(filmId);
-
-        if (userOpt.isPresent() && filmOpt.isPresent()) {
-            User user = userOpt.get();
-            user.getLikedFilms().removeIf(f -> f.getId().equals(filmId));
-            userRepository.save(user);
-        }
+        userRepository.removeLikeRelationship(userId, filmId);
     }
 
     public List<Film> getLikedFilms(String userId) {

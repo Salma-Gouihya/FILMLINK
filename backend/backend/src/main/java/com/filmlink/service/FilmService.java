@@ -22,7 +22,10 @@ public class FilmService {
     }
 
     public List<Film> searchFilms(String query) {
-        return filmRepository.findByTitleContaining(query);
+        if (query == null || query.trim().isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+        return filmRepository.findByTitleContainingIgnoreCase(query.trim());
     }
 
     public List<Film> getFilmsByGenre(String genre) {

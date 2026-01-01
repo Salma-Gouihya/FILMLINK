@@ -67,9 +67,7 @@ export default function FilmCard({ film, user, isLikedInitially = false }) {
                             <button className="icon-btn-circle filled" title="Lecture" onClick={(e) => { e.stopPropagation(); handleClick(); }}>
                                 <Play size={16} fill="black" />
                             </button>
-                            <button className="icon-btn-circle" title="Ajouter à ma liste" onClick={(e) => e.stopPropagation()}>
-                                <Plus size={16} />
-                            </button>
+
                             <button
                                 className={`icon-btn-circle ${isLiked ? 'liked' : ''} ${animating ? 'pulse' : ''}`}
                                 title={isLiked ? "Je n'aime plus" : "J'aime"}
@@ -89,22 +87,7 @@ export default function FilmCard({ film, user, isLikedInitially = false }) {
                         <span className="duration">1h 45m</span>
                     </div>
 
-                    <div className="info-genres">
-                        {film.genres && film.genres.length > 0 ? (
-                            film.genres.slice(0, 2).map((g, i) => (
-                                <React.Fragment key={g.id || i}>
-                                    <span className="genre">{g.name}</span>
-                                    {i < Math.min(film.genres.length, 2) - 1 && <span className="genre-dot">•</span>}
-                                </React.Fragment>
-                            ))
-                        ) : (
-                            <>
-                                <span className="genre">Action</span>
-                                <span className="genre-dot">•</span>
-                                <span className="genre">Drame</span>
-                            </>
-                        )}
-                    </div>
+
                 </div>
             </div>
         </div>

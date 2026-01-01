@@ -65,22 +65,12 @@ export default function Profile({ user }) {
                             <span className="count">{likedFilms.length}</span>
                             <span className="label">Titres aimés</span>
                         </div>
-                        <div className="stat">
-                            <span className="count">{favGenres.length}</span>
-                            <span className="label">Genres favoris</span>
-                        </div>
+
                     </div>
                 </div>
             </div>
 
-            <div className="profile-section">
-                <h3><Heart size={20} className="mr-2" /> Mes Genres Favoris</h3>
-                <div className="genre-tags">
-                    {favGenres.length > 0 ? favGenres.map(g => (
-                        <span key={g} className="genre-chip">{g}</span>
-                    )) : <p>Aimez des films pour voir vos genres favoris ici !</p>}
-                </div>
-            </div>
+
 
             {actorRecs.length > 0 && (
                 <div className="profile-section">

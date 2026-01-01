@@ -14,8 +14,13 @@ public interface FilmRepository extends Neo4jRepository<Film, String> {
     @Query("MATCH (f:Film) WHERE f.title CONTAINS $title RETURN f")
     List<Film> findByTitleContaining(@Param("title") String title);
 
-    @Query("MATCH (f:Film) WHERE toLower(f.title) CONTAINS toLower($title) RETURN f")
-    List<Film> findByTitleContainingIgnoreCase(@Param("title") String title);
+    @Query("MATCH (f:Film) " +
+           "WHERE $query <> '' AND (" +
+           "toLower(f.title) CONTAINS toLower($query) " +
+           "OR ANY(gName IN [(f)-[:HAS_GENRE]->(g:Genre) | g.name] WHERE toLower(gName) CONTAINS toLower($query)) " +
+           "OR ANY(aName IN [(f)<-[:ACTED_IN]-(a:Actor) | a.name] WHERE toLower(aName) CONTAINS toLower($query))" +
+           ") RETURN f")
+    List<Film> findByTitleContainingIgnoreCase(@Param("query") String query);
     
     @Query("MATCH (f:Film)-[:HAS_GENRE]->(g:Genre {name: $genreName}) RETURN f")
     List<Film> findByGenre(@Param("genreName") String genreName);
@@ -43,9 +48,6 @@ public interface FilmRepository extends Neo4jRepository<Film, String> {
            "RETURN rec")
     List<Film> findCollaborativeRecommendations(@Param("userId") String userId);
     
-    @Query("MATCH (f:Film) " +
-           "OPTIONAL MATCH (f)-[r1:HAS_GENRE]->(g:Genre) " +
-           "OPTIONAL MATCH (a:Actor)-[r2:ACTED_IN]->(f) " +
-           "RETURN f, collect(r1), collect(g), collect(r2), collect(a)")
+    @Query("MATCH (f:Film) RETURN f")
     List<Film> findAllWithRelationships();
 }
