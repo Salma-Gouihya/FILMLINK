@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { useNavigate, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import { getAuthToken } from './api/http.js'
 import { signin, signup, logout } from './api/auth.js'
@@ -9,7 +9,9 @@ import FilmDetail from './pages/FilmDetail'
 import SearchPage from './pages/Search'
 import MyList from './pages/MyList'
 import Profile from './pages/Profile'
+import AdminPage from './pages/Admin'
 function App() {
+  const navigate = useNavigate()
   const [token, setAuth] = useState(getAuthToken())
   const [user, setUser] = useState(null)
 
@@ -54,6 +56,13 @@ function App() {
           const userInfo = { username: data.username || username, id: data.id, roles: data.roles }
           localStorage.setItem('user_info', JSON.stringify(userInfo))
           setUser(userInfo)
+
+          // Automatic redirection based on role
+          if (userInfo.roles.includes('ROLE_ADMIN') || userInfo.roles.includes('ADMIN')) {
+            navigate('/admin')
+          } else {
+            navigate('/')
+          }
         }
       }
     } catch (err) {
@@ -117,17 +126,16 @@ function App() {
   }
 
   return (
-    <Router>
-      <Layout user={user} onLogout={handleLogout}>
-        <Routes>
-          <Route path="/" element={<Home user={user} />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/profile" element={<Profile user={user} />} />
-          <Route path="/films/:id" element={<FilmDetail user={user} />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <Layout user={user} onLogout={handleLogout}>
+      <Routes>
+        <Route path="/" element={<Home user={user} />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/profile" element={<Profile user={user} />} />
+        <Route path="/admin" element={<AdminPage user={user} onLogout={handleLogout} />} />
+        <Route path="/films/:id" element={<FilmDetail user={user} />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Layout>
   )
 }
 

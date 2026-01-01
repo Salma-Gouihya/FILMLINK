@@ -12,7 +12,9 @@ import java.util.Optional;
 public interface UserRepository extends Neo4jRepository<User, String> {
     Optional<User> findByUsername(String username);
     
-    @Query("MATCH (u:User) WHERE u.username = $usernameOrEmail OR u.email = $usernameOrEmail RETURN u LIMIT 1")
+    @Query("MATCH (u:User) WHERE u.username = $usernameOrEmail OR u.email = $usernameOrEmail " +
+           "OPTIONAL MATCH (u)-[r:HAS_ROLE]->(role:Role) " +
+           "RETURN u, r, role")
     Optional<User> findByUsernameOrEmail(@Param("usernameOrEmail") String usernameOrEmail);
     
     @Query("MATCH (u:User {email: $email}) RETURN u")

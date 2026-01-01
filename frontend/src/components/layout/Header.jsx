@@ -53,6 +53,9 @@ export default function Header({ user, onLogout }) {
                         </div>
                         <div className={`dropdown ${showUserMenu ? 'active' : ''}`}>
                             <Link to="/profile" className="dropdown-item">Profil</Link>
+                            {(user?.roles?.includes('ROLE_ADMIN') || user?.roles?.includes('ADMIN')) && (
+                                <Link to="/admin" className="dropdown-item" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Dashboard Admin</Link>
+                            )}
                             <span className="dropdown-item" onClick={onLogout}>Déconnexion</span>
                         </div>
                     </div>

@@ -9,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/films")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class FilmController {
 
     @Autowired
@@ -49,6 +48,12 @@ public class FilmController {
     @DeleteMapping("/{id}")
     public void deleteFilm(@PathVariable String id) {
         filmService.deleteFilm(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Film> updateFilm(@PathVariable String id, @RequestBody Film filmDetails) {
+        Film updatedFilm = filmService.updateFilm(id, filmDetails);
+        return updatedFilm != null ? ResponseEntity.ok(updatedFilm) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/recommendations/{userId}")

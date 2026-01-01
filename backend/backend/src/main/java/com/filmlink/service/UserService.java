@@ -37,4 +37,8 @@ public class UserService {
     public List<Film> getLikedFilms(String userId) {
         return filmRepository.findWatchedByUser(userId); 
     }
+
+    public long countUsers() {
+        return userRepository.count();
+    }
 }

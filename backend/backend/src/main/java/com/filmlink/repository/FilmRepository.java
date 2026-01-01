@@ -50,4 +50,7 @@ public interface FilmRepository extends Neo4jRepository<Film, String> {
     
     @Query("MATCH (f:Film) RETURN f")
     List<Film> findAllWithRelationships();
+
+    @Query("MATCH ()-[r:LIKED]->() RETURN count(r)")
+    long countTotalLikes();
 }

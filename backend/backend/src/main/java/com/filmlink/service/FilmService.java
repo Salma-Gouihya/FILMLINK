@@ -44,11 +44,27 @@ public class FilmService {
         filmRepository.deleteById(id);
     }
 
+    public Film updateFilm(String id, Film filmDetails) {
+        Film film = filmRepository.findById(id).orElse(null);
+        if (film != null) {
+            film.setTitle(filmDetails.getTitle());
+            film.setReleaseYear(filmDetails.getReleaseYear());
+            film.setDescription(filmDetails.getDescription());
+            film.setPosterUrl(filmDetails.getPosterUrl());
+            return filmRepository.save(film);
+        }
+        return null;
+    }
+
     public List<Film> getRecommendations(String userId) {
         return filmRepository.findRecommendationsByUserId(userId);
     }
 
     public List<Film> getCollaborativeRecommendations(String userId) {
         return filmRepository.findCollaborativeRecommendations(userId);
+    }
+
+    public long countTotalLikes() {
+        return filmRepository.countTotalLikes();
     }
 }
