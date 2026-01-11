@@ -51,6 +51,7 @@ public class FilmService {
             film.setReleaseYear(filmDetails.getReleaseYear());
             film.setDescription(filmDetails.getDescription());
             film.setPosterUrl(filmDetails.getPosterUrl());
+            film.setVideoUrl(filmDetails.getVideoUrl());
             return filmRepository.save(film);
         }
         return null;

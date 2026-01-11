@@ -10,6 +10,7 @@ import SearchPage from './pages/Search'
 import MyList from './pages/MyList'
 import Profile from './pages/Profile'
 import AdminPage from './pages/Admin'
+import Watch from './pages/Watch'
 function App() {
   const navigate = useNavigate()
   const [token, setAuth] = useState(getAuthToken())
@@ -53,7 +54,12 @@ function App() {
         const data = await signin({ usernameOrEmail: username, password })
         if (data.accessToken) {
           setAuth(data.accessToken)
-          const userInfo = { username: data.username || username, id: data.id, roles: data.roles }
+          const userInfo = {
+            username: data.username || username,
+            id: data.id,
+            email: data.email,
+            roles: data.roles
+          }
           localStorage.setItem('user_info', JSON.stringify(userInfo))
           setUser(userInfo)
 
@@ -130,9 +136,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home user={user} />} />
         <Route path="/search" element={<SearchPage />} />
-        <Route path="/profile" element={<Profile user={user} />} />
+        <Route path="/profile" element={<Profile user={user} onUserUpdate={(updated) => setUser(updated)} />} />
         <Route path="/admin" element={<AdminPage user={user} onLogout={handleLogout} />} />
         <Route path="/films/:id" element={<FilmDetail user={user} />} />
+        <Route path="/watch/:id" element={<Watch />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Layout>

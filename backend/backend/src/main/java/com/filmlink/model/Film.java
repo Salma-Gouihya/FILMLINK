@@ -10,6 +10,7 @@ import java.util.Set;
 @Data
 public class Film {
     @Id
+    @Property("id")
     private String id;
 
     @Property("title")
@@ -22,6 +23,9 @@ public class Film {
     
     @Property("posterUrl")
     private String posterUrl;
+    
+    @Property("videoUrl")
+    private String videoUrl;
     
     private String tagline;
 

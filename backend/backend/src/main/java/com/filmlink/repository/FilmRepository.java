@@ -22,13 +22,22 @@ public interface FilmRepository extends Neo4jRepository<Film, String> {
            ") RETURN f")
     List<Film> findByTitleContainingIgnoreCase(@Param("query") String query);
     
-    @Query("MATCH (f:Film)-[:HAS_GENRE]->(g:Genre {name: $genreName}) RETURN f")
+    @Query("MATCH (f:Film)-[:HAS_GENRE]->(g:Genre {name: $genreName}) " +
+           "OPTIONAL MATCH (f)-[hg:HAS_GENRE]->(gen:Genre) " +
+           "OPTIONAL MATCH (f)<-[ai:ACTED_IN]-(a:Actor) " +
+           "RETURN f, hg, gen, ai, a")
     List<Film> findByGenre(@Param("genreName") String genreName);
     
-    @Query("MATCH (f:Film)<-[:ACTED_IN]-(a:Actor {name: $actorName}) RETURN f")
+    @Query("MATCH (f:Film)<-[:ACTED_IN]-(a:Actor {name: $actorName}) " +
+           "OPTIONAL MATCH (f)-[hg:HAS_GENRE]->(g:Genre) " +
+           "OPTIONAL MATCH (f)<-[ai:ACTED_IN]-(act:Actor) " +
+           "RETURN f, hg, g, ai, act")
     List<Film> findByActor(@Param("actorName") String actorName);
     
-    @Query("MATCH (f:Film)<-[:LIKED]-(u:User) WHERE u.id = $userId RETURN f")
+    @Query("MATCH (u:User {id: $userId})-[r:LIKED]->(f:Film) " +
+           "OPTIONAL MATCH (f)-[hg:HAS_GENRE]->(g:Genre) " +
+           "OPTIONAL MATCH (f)<-[ai:ACTED_IN]-(a:Actor) " +
+           "RETURN f, hg, g, ai, a")
     List<Film> findWatchedByUser(@Param("userId") String userId);
 
     // Content-Based Filtering (based on genres)
@@ -48,7 +57,10 @@ public interface FilmRepository extends Neo4jRepository<Film, String> {
            "RETURN rec")
     List<Film> findCollaborativeRecommendations(@Param("userId") String userId);
     
-    @Query("MATCH (f:Film) RETURN f")
+    @Query("MATCH (f:Film) " +
+           "OPTIONAL MATCH (f)-[hg:HAS_GENRE]->(g:Genre) " +
+           "OPTIONAL MATCH (f)<-[ai:ACTED_IN]-(a:Actor) " +
+           "RETURN f, hg, g, ai, a")
     List<Film> findAllWithRelationships();
 
     @Query("MATCH ()-[r:LIKED]->() RETURN count(r)")

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Play, Plus, ThumbsUp, Star, Calendar, Clock, Share2, Check, X } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Play, Clock } from 'lucide-react';
 import { getFilmById, getRecommendations } from '../api/films';
-import { addLike, removeLike, getMyList } from '../api/user';
+import { getMyList } from '../api/user';
 import Button from '../components/ui/Button';
 import SectionRow from '../components/ui/SectionRow';
 import Loader from '../components/ui/Loader';
@@ -10,6 +10,7 @@ import './FilmDetail.css';
 
 export default function FilmDetail({ user }) {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [film, setFilm] = useState(null);
     const [recommendations, setRecommendations] = useState([]);
     const [likedFilmIds, setLikedFilmIds] = useState(new Set());
@@ -47,21 +48,6 @@ export default function FilmDetail({ user }) {
         }
     }, [id, user]);
 
-    const handleToggleLike = async () => {
-        if (!user) return alert("Veuillez vous connecter");
-        try {
-            if (isLiked) {
-                await removeLike(user.id, film.id);
-                setIsLiked(false);
-            } else {
-                await addLike(user.id, film.id);
-                setIsLiked(true);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
     if (loading) {
         return (
             <div className="flex-center" style={{ height: '100vh' }}>
@@ -89,15 +75,14 @@ export default function FilmDetail({ user }) {
                         </div>
 
                         <div className="detail-actions">
-                            <Button icon={Play} size="lg" className="mr-4">Lecture</Button>
-
-                            <button
-                                className={`detail-icon-btn ${isLiked ? 'active' : ''}`}
-                                onClick={handleToggleLike}
-                                title={isLiked ? "Retirer des favoris" : "Ajouter aux favoris"}
+                            <Button
+                                icon={Play}
+                                size="lg"
+                                className="mr-4"
+                                onClick={() => navigate(`/watch/${film.id}`)}
                             >
-                                <ThumbsUp size={24} fill={isLiked ? "currentColor" : "none"} />
-                            </button>
+                                Lecture
+                            </Button>
                         </div>
 
                         <p className="detail-synopsis">

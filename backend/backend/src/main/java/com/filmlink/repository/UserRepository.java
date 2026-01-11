@@ -23,6 +23,9 @@ public interface UserRepository extends Neo4jRepository<User, String> {
     @Query("MATCH (u:User {id: $userId})-[r:LIKED]->(f:Film {id: $filmId}) DELETE r")
     void removeLikeRelationship(@Param("userId") String userId, @Param("filmId") String filmId);
     
+    @Query("MATCH (u:User {id: $userId}) SET u.username = $username, u.email = $email, u.password = $password")
+    void updateProfile(@Param("userId") String userId, @Param("username") String username, @Param("email") String email, @Param("password") String password);
+
     Boolean existsByUsername(String username);
     Boolean existsByEmail(String email);
 }

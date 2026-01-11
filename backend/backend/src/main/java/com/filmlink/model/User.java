@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 @Data
 public class User {
     @Id
+    @Property("id")
     private String id;
     
     @Property(name = "username")
@@ -57,21 +58,5 @@ public class User {
         this.roles = roleNames.stream()
                            .map(Role::new)
                            .collect(Collectors.toSet());
-    }
-    
-    public String getId() {
-        return id;
-    }
-    
-    public String getUsername() {
-        return username;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public String getPassword() {
-        return password;
     }
 }

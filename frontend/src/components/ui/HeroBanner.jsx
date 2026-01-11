@@ -25,7 +25,7 @@ export default function HeroBanner({ film, user }) {
                         {film.description || "Plongez dans cette aventure cinématographique unique. Une expérience inoubliable vous attend dans ce chef-d'œuvre acclamé par la critique."}
                     </p>
                     <div className="hero-actions">
-                        <Button icon={Play} size="lg" className="mr-4" onClick={() => navigate(`/films/${film.id}`)}>Lecture</Button>
+                        <Button icon={Play} size="lg" className="mr-4" onClick={() => navigate(`/watch/${film.id}`)}>Lecture</Button>
                         <Button icon={Info} variant="secondary" size="lg" onClick={handleInfoClick}>Plus d'infos</Button>
                     </div>
                 </div>

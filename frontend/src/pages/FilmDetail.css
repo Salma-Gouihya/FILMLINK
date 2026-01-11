@@ -25,6 +25,8 @@
 .detail-content {
     max-width: 700px;
     margin-top: 60px;
+    position: relative;
+    z-index: 2;
 }
 
 .detail-title {

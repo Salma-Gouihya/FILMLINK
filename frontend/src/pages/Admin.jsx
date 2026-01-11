@@ -17,6 +17,7 @@ export default function AdminPage({ user, onLogout }) {
         releaseYear: '',
         description: '',
         posterUrl: '',
+        videoUrl: '',
         duration: '1h 45m'
     });
 
@@ -55,6 +56,7 @@ export default function AdminPage({ user, onLogout }) {
             releaseYear: film.releaseYear,
             description: film.description,
             posterUrl: film.posterUrl,
+            videoUrl: film.videoUrl || '',
             duration: film.duration || '1h 45m'
         });
         setShowAddForm(true);
@@ -76,7 +78,7 @@ export default function AdminPage({ user, onLogout }) {
             }
             setShowAddForm(false);
             setEditingFilm(null);
-            setNewFilm({ title: '', releaseYear: '', description: '', posterUrl: '', duration: '1h 45m' });
+            setNewFilm({ title: '', releaseYear: '', description: '', posterUrl: '', videoUrl: '', duration: '1h 45m' });
             loadData();
         } catch (err) {
             console.error(err);
@@ -211,6 +213,14 @@ export default function AdminPage({ user, onLogout }) {
                                 />
                             </div>
                             <div className="form-group">
+                                <label>URL de la vidéo (YouTube ou direct)</label>
+                                <input
+                                    type="text"
+                                    value={newFilm.videoUrl}
+                                    onChange={e => setNewFilm({ ...newFilm, videoUrl: e.target.value })}
+                                />
+                            </div>
+                            <div className="form-group">
                                 <label>Description (Synopsis)</label>
                                 <textarea
                                     value={newFilm.description}
@@ -223,7 +233,7 @@ export default function AdminPage({ user, onLogout }) {
                                 <button type="button" className="btn-secondary" onClick={() => {
                                     setShowAddForm(false);
                                     setEditingFilm(null);
-                                    setNewFilm({ title: '', releaseYear: '', description: '', posterUrl: '', duration: '1h 45m' });
+                                    setNewFilm({ title: '', releaseYear: '', description: '', posterUrl: '', videoUrl: '', duration: '1h 45m' });
                                 }}>Annuler</button>
                                 <button type="submit" className="btn-primary">{editingFilm ? 'Modifier' : 'Enregistrer'}</button>
                             </div>
